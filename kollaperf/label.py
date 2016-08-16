@@ -1,20 +1,22 @@
 # -*- coding: utf-8 -*-
+import sys
+import subprocess
+
+import cairo
 import gi
 gi.require_version('Pango', '1.0')
 gi.require_version('PangoCairo', '1.0')
 
 from gi.repository import Pango, PangoCairo
 
-import cairo
-import sys
-
 TEMPLATE_FILENAME = 'data/EtikettefuerKolla.png'
 FONT_NAME = 'American Typewriter'
-FONT_SIZE = 25
+FONT_SIZE = 35
 FONT_DESCRIPTION = Pango.FontDescription('{} {}'.format(FONT_NAME, FONT_SIZE))
 TEXT_PORTION = 0.75
 
 TOP_LEFT_CORNER = (25, 25)
+PRINTER_NAME = 'Brother_QL-500'
 
 def generate_label(text, output_file, font_description=FONT_DESCRIPTION):
     surf = cairo.ImageSurface.create_from_png(TEMPLATE_FILENAME)
@@ -28,6 +30,8 @@ def generate_label(text, output_file, font_description=FONT_DESCRIPTION):
     layout.set_text(text, len(text))
     layout.set_width((TEXT_PORTION * surf.get_width() - TOP_LEFT_CORNER[0])
                     * Pango.SCALE)
+    layout.set_height((surf.get_height() - TOP_LEFT_CORNER[1]) * Pango.SCALE)
+    layout.set_ellipsize(Pango.EllipsizeMode.END)
 
     opts = cairo.FontOptions()
     opts.set_antialias(cairo.ANTIALIAS_SUBPIXEL)
@@ -39,3 +43,8 @@ def generate_label(text, output_file, font_description=FONT_DESCRIPTION):
     PangoCairo.show_layout(context, layout)
 
     surf.write_to_png(output_file)
+
+def print_filename(filename, printer=PRINTER_NAME):
+    proc = subprocess.Popen(['lpr', '-P', printer, filename])
+    if proc.wait() != 0:
+        raise RuntimeError("Couldn't print!")
