@@ -1,6 +1,6 @@
 import logging
 
-from kollaperf.twitter import start
+from kollaperf.machine import Machine
 
 formatter = logging.Formatter("%(asctime)s [%(name)s] [%(levelname)s] %(message)s")
 root_logger = logging.getLogger()
@@ -14,4 +14,5 @@ consoleHandler = logging.StreamHandler()
 consoleHandler.setFormatter(formatter)
 root_logger.addHandler(consoleHandler)
 
-start()
+machine = Machine()
+machine.run_forever()
