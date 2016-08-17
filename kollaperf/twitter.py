@@ -11,6 +11,12 @@ from kollaperf.config import settings
 twitter_settings = settings['twitter']
 log = logging.getLogger(__name__)
 
+def is_appropriate(text):
+    for term in twitter_settings['track']:
+        if all(word in text for word in term.split(' ')):
+            return True
+    return False
+
 class PrintingListener(StreamListener):
     def __init__(self, machine):
         self.machine = machine
@@ -19,8 +25,9 @@ class PrintingListener(StreamListener):
         try:
             info = json.loads(data)
             text = info['text']
-            log.info('Collected tweet {} ({})...'.format(info['id_str'], info['text']))
-            self.machine.collect_tweet(info['text'])
+            if is_appropriate(text):
+                log.info('Collected tweet {} ({})...'.format(info['id_str'], info['text']))
+                self.machine.collect_tweet(info['text'])
         except Exception as e:
             log.exception(e)
 
