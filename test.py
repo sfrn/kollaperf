@@ -1,8 +1,17 @@
-#from kollaperf.printer import MachinePrinter
-#
-#printer = MachinePrinter()
-#printer.print('hey ;)')
+import logging
 
-from kollaperf.label import generate_label, generate_and_print
+from kollaperf.twitter import start
 
-generate_and_print('Love in the air, blood on the ground\nAnd we did nothing and turned around\nPeople like me people like you')
+formatter = logging.Formatter("%(asctime)s [%(name)s] [%(levelname)s] %(message)s")
+root_logger = logging.getLogger()
+root_logger.setLevel(logging.INFO)
+
+file_handler = logging.FileHandler("kolla.log")
+file_handler.setFormatter(formatter)
+root_logger.addHandler(file_handler)
+
+consoleHandler = logging.StreamHandler()
+consoleHandler.setFormatter(formatter)
+root_logger.addHandler(consoleHandler)
+
+start()

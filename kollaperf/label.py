@@ -15,7 +15,6 @@ gi.require_version('PangoCairo', '1.0')
 
 from gi.repository import Pango, PangoCairo
 
-
 logger = logging.getLogger(__name__)
 
 FONT_DESCRIPTION = Pango.FontDescription('{} {}'.format(label_settings['font_name'],
@@ -48,9 +47,10 @@ def generate_label(text, output_file):
     surf.write_to_png(output_file)
 
 def print_filename(filename, printer=label_settings['printer_name']):
-    proc = subprocess.Popen(['lp', '-d', printer, filename])
-    if proc.wait() != 0:
-        raise RuntimeError("Couldn't print!")
+    proc = subprocess.Popen(['lp', '-d', printer, filename], stderr=subprocess.PIPE)
+    stdout, stderr = proc.communicate()
+    if proc.returncode != 0:
+        raise RuntimeError("Couldn't print: {!r}".format(stderr))
 
 def generate_and_print(text):
     with NamedTemporaryFile() as f:
