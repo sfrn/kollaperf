@@ -3,9 +3,6 @@
 #printer = MachinePrinter()
 #printer.print('hey ;)')
 
-from kollaperf.label import generate_label, print_filename
+from kollaperf.label import generate_label, generate_and_print
 
-with open('foo.png', 'wb') as f:
-    generate_label('Hello Safran Hello Safran Hello Safran Hello Safran Hello Safran Hello Safran Hello Safran Hallo Safran Frobilausens hey', f)
-
-#print_filename('foo.png')
+generate_and_print('Love in the air, blood on the ground\nAnd we did nothing and turned around\nPeople like me people like you')

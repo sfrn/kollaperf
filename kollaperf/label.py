@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import sys
+import logging
 import subprocess
+from tempfile import NamedTemporaryFile
 
 import cairo
 import gi
@@ -17,6 +19,8 @@ TEXT_PORTION = 0.75
 
 TOP_LEFT_CORNER = (25, 25)
 PRINTER_NAME = 'QL-550'
+
+logger = logging.getLogger(__name__)
 
 def generate_label(text, output_file, font_description=FONT_DESCRIPTION):
     surf = cairo.ImageSurface.create_from_png(TEMPLATE_FILENAME)
@@ -48,3 +52,10 @@ def print_filename(filename, printer=PRINTER_NAME):
     proc = subprocess.Popen(['lp', '-d', printer, filename])
     if proc.wait() != 0:
         raise RuntimeError("Couldn't print!")
+
+def generate_and_print(text):
+    with NamedTemporaryFile() as f:
+        logger.info('Generate {!r} to {!r} ...'.format(text, f.name))
+        generate_label(text, f.name)
+        f.flush()
+        print_filename(f.name)
