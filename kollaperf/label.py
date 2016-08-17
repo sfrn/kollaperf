@@ -16,7 +16,7 @@ FONT_DESCRIPTION = Pango.FontDescription('{} {}'.format(FONT_NAME, FONT_SIZE))
 TEXT_PORTION = 0.75
 
 TOP_LEFT_CORNER = (25, 25)
-PRINTER_NAME = 'Brother_QL-500'
+PRINTER_NAME = 'QL-550'
 
 def generate_label(text, output_file, font_description=FONT_DESCRIPTION):
     surf = cairo.ImageSurface.create_from_png(TEMPLATE_FILENAME)
@@ -45,6 +45,6 @@ def generate_label(text, output_file, font_description=FONT_DESCRIPTION):
     surf.write_to_png(output_file)
 
 def print_filename(filename, printer=PRINTER_NAME):
-    proc = subprocess.Popen(['lpr', '-P', printer, filename])
+    proc = subprocess.Popen(['lp', '-d', printer, filename])
     if proc.wait() != 0:
         raise RuntimeError("Couldn't print!")
